@@ -1,45 +1,50 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { useChatBadgeContext } from "@/hooks/provider/ChatBadgeProvider";
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs, useSegments } from "expo-router";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+const TabLayout = () => {
+    const segments = useSegments();
+    const {badgeCount} = useChatBadgeContext();
+    
+    return (
+        <Tabs
+            screenOptions={{
+                tabBarActiveTintColor: "#FFA001",
+                tabBarInactiveTintColor: "#CDCDE0",
+                tabBarStyle: {
+                    display: segments[segments.length - 1] === "[id]" ? 'none' : 'flex',
+                    backgroundColor: "#161622",
+                    borderTopWidth: 2,
+                    borderTopColor: "#232533"
+                },
+                sceneStyle: {
+                    backgroundColor: "#161622"
+                }
+            }}
+        >
+            <Tabs.Screen
+                name="chat"
+                options={{
+                    title: "Chat",
+                    headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="chatbubbles" size={size} color={color} />
+                    ),
+                    tabBarBadge: badgeCount === 0 ? undefined : badgeCount
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title: "Profile",
+                    headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="person" size={size} color={color} />
+                    ),
+                }}
+            />
+        </Tabs>
+    );
+};
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
-}
+export default TabLayout;

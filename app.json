@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "react-native-paper",
-    "slug": "react-native-paper",
+    "slug": "hk2t-chat",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,13 +9,15 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.huynhgiakhoi.hk2tchat"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.huynhgiakhoi.hk2tchat"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +38,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "754f9b94-3db1-4f08-93b0-879fd30a5004"
+      }
+    },
+    "owner": "huynhgiakhoi"
   }
 }

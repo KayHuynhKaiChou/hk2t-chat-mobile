@@ -46,7 +46,6 @@ export default function ConversationPage() {
     } = useMessage(id as string);
 
     const flatListRef = useRef<FlatList<MessageData>>(null);
-
     // const chunkMessages = useMemo(() => {
     //   if (messages.length === 0) return [];
     //   return messages
@@ -63,10 +62,6 @@ export default function ConversationPage() {
     //   },[]); // reverse + inverted của flatlist mới giải quyết đc vụ mở keyboard
     // }, [messages])
 
-    const isReversedMessages = useMemo(() => {
-      return messages.length >= 8
-    }, [messages])
-
     const reversedMessages = useMemo(() => {
       return messages.reduceRight<MessageData[]>((acc, curr) => {
         acc.push(curr);
@@ -75,14 +70,8 @@ export default function ConversationPage() {
     }, [messages]);
 
     const getFormatDate = (item: MessageData, index: number) => {
-      if (isReversedMessages) {
-        return formatDateBetweenMsg(
-          index !== reversedMessages.length - 1 ? reversedMessages[index + 1].createdAt : null,
-          item.createdAt
-        );
-      }
       return formatDateBetweenMsg(
-        index ? reversedMessages[index - 1].createdAt : null,
+        index !== reversedMessages.length - 1 ? reversedMessages[index + 1].createdAt : null,
         item.createdAt
       );
     }
@@ -177,23 +166,17 @@ export default function ConversationPage() {
         >
           <FlatList
             ItemSeparatorComponent={() => <View style={{ marginVertical: 1 }}></View>}
-            // onLayout={() => flatListRef && flatListRef.current?.scrollToOffset({animated: true, offset: flatListHeight})}
-            inverted={!isLoadingConversation && isReversedMessages} // reverse data + inverted của flatlist mới giải quyết đc vụ mở keyboard
+            inverted // reverse data + inverted của flatlist mới giải quyết đc vụ mở keyboard
             ref={flatListRef}
+            // onLayout={() => flatListRef && flatListRef.current?.scrollToOffset({animated: true, offset: flatListHeight})}
             // onContentSizeChange={(width, height) => {
             //   flatListRef && flatListRef.current?.scrollToOffset({offset: height});
             // }}
-            data={isReversedMessages ? reversedMessages.slice(0, numberSlice + 20) : messages}
+            data={reversedMessages.slice(0, numberSlice + 20)}
             keyExtractor={item => item._id}
             renderItem={({ item, index }) => {
               const formatDate = getFormatDate(item, index);
-              const isLastMessageInGroup = (() => {
-                if (isReversedMessages) {
-                  return item.sender !== reversedMessages[index - 1]?.sender
-                } else {
-                  return item.sender !== messages[index + 1]?.sender
-                }
-              })()
+              const isLastMessageInGroup = item.sender !== reversedMessages[index - 1]?.sender
               if (item.sender === id) {
                 return (
                   <ReceiverMessage
